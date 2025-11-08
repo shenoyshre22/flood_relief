@@ -24,13 +24,35 @@ void addArea(Graph *g, char name[]) {
         printf("Cannot add more areas.\n");
         return;
     }
-    if (findAreaIndex(g, name) != -1) {
+
+    size_t cap = sizeof g->areaNames[g->numAreas]; // capacity for one name
+    char tmp[sizeof g->areaNames[0]];
+    // Copy safely and ensure null-termination
+    strncpy(tmp, name, cap - 1);
+    tmp[cap - 1] = '\0';
+
+    // Trim trailing newline/carriage return if caller used fgets
+    size_t len = strlen(tmp);
+    while (len > 0 && (tmp[len - 1] == '\n' || tmp[len - 1] == '\r')) {
+        tmp[--len] = '\0';
+    }
+
+    if (len == 0) {
+        printf("Name cannot be empty.\n");
+        return;
+    }
+
+    if (findAreaIndex(g, tmp) != -1) {
         printf("Area already exists.\n");
         return;
     }
-    strcpy(g->areaNames[g->numAreas], name);
+
+    // Copy into graph storage
+    strncpy(g->areaNames[g->numAreas], tmp, cap - 1);
+    g->areaNames[g->numAreas][cap - 1] = '\0';
+
     g->numAreas++;
-    printf("Area '%s' added successfully.\n", name);
+    printf("Area '%s' added successfully.\n", tmp);
 }
 
 void deleteArea(Graph *g, char name[]) {
