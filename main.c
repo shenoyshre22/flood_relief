@@ -1,14 +1,30 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "flood.h"
 
-// helper function to safely read a line with spaces
+// helper function to safely read line input
 void readLine(char *str, int size) {
-    // flush leftover input if needed
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
     fgets(str, size, stdin);
     str[strcspn(str, "\n")] = '\0'; // remove newline
+}
+
+// helper to get integer input safely
+int getIntInput(const char *prompt) {
+    char buf[20];
+    int val;
+    printf("%s", prompt);
+    fgets(buf, sizeof(buf), stdin);
+    val = atoi(buf);
+    return val;
+}
+
+// ask user if they want to continue an operation
+int askContinue(const char *msg) {
+    char choice[5];
+    printf("%s (y/n): ", msg);
+    readLine(choice, sizeof(choice));
+    return (choice[0] == 'y' || choice[0] == 'Y');
 }
 
 int main() {
@@ -31,46 +47,56 @@ int main() {
         printf("7. Mark area as delivered\n");
         printf("8. Display stock\n");
         printf("0. Exit\n");
-        printf("Enter choice: ");
-        scanf("%d", &choice);
+
+        choice = getIntInput("Enter choice: ");
 
         switch (choice) {
             case 1:
-                printf("Enter number of packages to add: ");
-                scanf("%d", &num);
-                for (int i = 0; i < num; i++) {
-                    if (isFull(&q)) {
-                        printf("Inventory full! %d packages added so far.\n", i);
-                        break;
+                do {
+                    num = getIntInput("Enter number of packages to add: ");
+                    for (int i = 0; i < num; i++) {
+                        if (isFull(&q)) {
+                            printf("Inventory full! %d packages added so far.\n", i);
+                            break;
+                        }
+                        enqueue(&q, 1);
                     }
-                    enqueue(&q, 1);
-                }
+                    displayQueue(&q);
+                } while (askContinue("Add more packages?"));
                 break;
 
             case 2:
-                printf("Enter number of packages to transport: ");
-                scanf("%d", &num);
-                dequeue(&q, num);
+                do {
+                    num = getIntInput("Enter number of packages to transport: ");
+                    dequeue(&q, num);
+                    displayQueue(&q);
+                } while (askContinue("Remove more packages?"));
                 break;
 
             case 3:
-                printf("Enter area name: ");
-                readLine(area, sizeof(area));
-                addArea(&g, area);
+                do {
+                    printf("Enter area name: ");
+                    readLine(area, sizeof(area));
+                    addArea(&g, area);
+                } while (askContinue("Add another area?"));
                 break;
 
             case 4:
-                printf("Enter area name to delete: ");
-                readLine(area, sizeof(area));
-                deleteArea(&g, area);
+                do {
+                    printf("Enter area name to delete: ");
+                    readLine(area, sizeof(area));
+                    deleteArea(&g, area);
+                } while (askContinue("Delete another area?"));
                 break;
 
             case 5:
-                printf("Enter source area: ");
-                readLine(src, sizeof(src));
-                printf("Enter destination area: ");
-                readLine(dest, sizeof(dest));
-                addConnection(&g, src, dest);
+                do {
+                    printf("Enter source area: ");
+                    readLine(src, sizeof(src));
+                    printf("Enter destination area: ");
+                    readLine(dest, sizeof(dest));
+                    addConnection(&g, src, dest);
+                } while (askContinue("Add another connection?"));
                 break;
 
             case 6:
@@ -78,9 +104,11 @@ int main() {
                 break;
 
             case 7:
-                printf("Enter area name to mark delivered: ");
-                readLine(area, sizeof(area));
-                markDelivered(&g, area);
+                do {
+                    printf("Enter area name to mark delivered: ");
+                    readLine(area, sizeof(area));
+                    markDelivered(&g, area);
+                } while (askContinue("Mark another area as delivered?"));
                 break;
 
             case 8:
