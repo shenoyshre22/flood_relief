@@ -2,6 +2,15 @@
 #include <string.h>
 #include "flood.h"
 
+// helper function to safely read a line with spaces
+void readLine(char *str, int size) {
+    // flush leftover input if needed
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+    fgets(str, size, stdin);
+    str[strcspn(str, "\n")] = '\0'; // remove newline
+}
+
 int main() {
     Queue q;
     Graph g;
@@ -46,21 +55,21 @@ int main() {
 
             case 3:
                 printf("Enter area name: ");
-                scanf("%s", area);
+                readLine(area, sizeof(area));
                 addArea(&g, area);
                 break;
 
             case 4:
                 printf("Enter area name to delete: ");
-                scanf("%s", area);
+                readLine(area, sizeof(area));
                 deleteArea(&g, area);
                 break;
 
             case 5:
                 printf("Enter source area: ");
-                scanf("%s", src);
+                readLine(src, sizeof(src));
                 printf("Enter destination area: ");
-                scanf("%s", dest);
+                readLine(dest, sizeof(dest));
                 addConnection(&g, src, dest);
                 break;
 
@@ -70,7 +79,7 @@ int main() {
 
             case 7:
                 printf("Enter area name to mark delivered: ");
-                scanf("%s", area);
+                readLine(area, sizeof(area));
                 markDelivered(&g, area);
                 break;
 
