@@ -1,6 +1,8 @@
 
-🌀 Flood Relief Camp and Resource Allocation System
-📘 Overview
+🌀 **Flood Relief Camp and Resource Allocation System**
+
+
+📘 ***Overview***
 
 This project is a C-based Flood Relief Management System designed to efficiently manage relief operations during natural disasters.
 It implements two core Data Structures:
@@ -11,35 +13,38 @@ Graph (Non-linear): used to represent areas and their connectivity for efficient
 
 The system enables adding areas, connecting them, registering camps, maintaining stock, and allocating resources.
 
-🧩 Functionalities
+🧩 ***Functionalities***
 
-Add Areas and Connectivity
+1)Add Areas and Connectivity
 
-Add new areas (nodes) and establish connections (edges) between them.
+2)Add new areas (nodes) and establish connections (edges) between them.
 
-Simulates real-world connectivity for resource delivery.
+3)Simulates real-world connectivity for resource delivery.
 
-Register Camps and Available Resources
+4)Register Camps and Available Resources
 
-Each camp maintains available stock of relief materials.
+5)Each camp maintains available stock of relief materials.
 
-Stock is stored and managed using a queue.
+6)Stock is stored and managed using a queue.
 
-Enqueue Relief Requests
+7)Enqueue Relief Requests
 
-Requests are added in FIFO order to ensure fairness.
+8)Requests are added in FIFO order to ensure fairness.
 
-Allocate Resources and Update Stock
+9)Allocate Resources and Update Stock
 
-Packages are dequeued and delivered to the required areas.
+10)Packages are dequeued and delivered to the required areas.
 
-Graph nodes are updated from Pending to Delivered.
+11)Graph nodes are updated from Pending to Delivered.
 
-⚙️ Data Structures Used
+⚙️ ***Data Structures Used***
+
 Data Structure	Type	Purpose
 Queue	Linear	Handles relief package requests in FIFO order
 Graph (Adjacency Matrix)	Non-linear	Represents areas and their connections for delivery planning
-🧠 File Structure
+
+🧠 ***File Structure***
+
 flood_relief/
 │
 ├── main.c        → main driver file (menu, user interface)
@@ -48,32 +53,34 @@ flood_relief/
 ├── graph.c       → graph implementation (areas & connectivity)
 └── README.md     → project documentation
 
-🧩 How It Works
+🧩 ***How It Works***
 
-Initialize the System
+->Initialize the System
 
-Creates an empty graph and queue.
+->Creates an empty graph and queue.
 
-Add Areas
+->Add Areas
 
-Add affected areas using addArea().
+->Add affected areas using addArea().
 
-Add Connectivity
+->Add Connectivity
 
-Connect two areas using addConnection() (bidirectional).
+->Connect two areas using addConnection() (bidirectional).
 
-Manage Stock
+->Manage Stock
 
-Add packages to inventory using enqueue().
+->Add packages to inventory using enqueue().
 
-Remove packages for delivery using dequeue().
+->Remove packages for delivery using dequeue().
 
-Mark Deliveries
+->Mark Deliveries
 
-Once resources reach an area, mark it as Delivered in the graph.
+->Once resources reach an area, mark it as Delivered in the graph.
 
-🧪 Menu (CLI Interface)
+🧪 ***Menu (CLI Interface)***
+
 ==== FLOOD RELIEF MANAGEMENT ====
+
 1. Add stock to inventory
 2. Remove stock for transport
 3. Add area
@@ -84,20 +91,20 @@ Once resources reach an area, mark it as Delivered in the graph.
 8. Display stock
 0. Exit
 
-⚙️ How to Compile and Run
+⚙️ ***How to Compile and Run***
 
-On Linux / Mac:
+*On Linux / Mac:*
 
 gcc main.c graph.c queue.c -o flood_relief
 ./flood_relief
 
 
-On Windows (CMD or PowerShell):
+*On Windows (CMD or PowerShell):*
 
 gcc main.c graph.c queue.c -o flood_relief.exe
 flood_relief
 
-💡 Example Workflow
+💡 ***Example Workflow***
 
 Add areas: AreaA, AreaB, AreaC
 
@@ -109,7 +116,7 @@ Deliver 3 packages and mark AreaA as delivered
 
 Display graph → shows AreaA marked as Delivered
 
-👩‍💻 Team Members
+👩‍💻 ***Team Members***
 
 Shreya Patil – PES2UG24CS484
 
@@ -117,12 +124,13 @@ Shreya Shenoy – PES2UG24CS487
 
 Shrungashree K R – PES2UG24CS497
 
-📚 Key Learning Outcomes
+📚 ***Key Learning Outcomes***
 
 Implemented Queue and Graph in a real-world simulation scenario.
 
 Practiced modular programming using multiple C source files.
 
 Understood FIFO processing and Graph traversal concepts.
+
 
 Strengthened skills in data structure design and clean code organization.
