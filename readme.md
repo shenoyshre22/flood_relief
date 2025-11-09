@@ -46,11 +46,15 @@ Graph (Adjacency Matrix)	Non-linear	Represents areas and their connections for d
 🧠 ***File Structure***
 
 flood_relief/
-│
+
 ├── main.c        → main driver file (menu, user interface)
+
 ├── flood.h       → header file (structure & function declarations)
+
 ├── queue.c       → queue implementation (managing relief packages)
+
 ├── graph.c       → graph implementation (areas & connectivity)
+
 └── README.md     → project documentation
 
 🧩 ***How It Works***
@@ -95,14 +99,21 @@ flood_relief/
 
 *On Linux / Mac:*
 
+
 gcc main.c graph.c queue.c -o flood_relief
 ./flood_relief
 
 
+
+
 *On Windows (CMD or PowerShell):*
+
+
 
 gcc main.c graph.c queue.c -o flood_relief.exe
 flood_relief
+
+
 
 💡 ***Example Workflow***
 
@@ -134,3 +145,4 @@ Understood FIFO processing and Graph traversal concepts.
 
 
 Strengthened skills in data structure design and clean code organization.
+
