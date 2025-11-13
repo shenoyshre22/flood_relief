@@ -2,7 +2,7 @@
 #include <string.h>
 #include "flood.h"
 
-void initGraph(Graph *g) {
+void initGraph(Graph *g) { //adjacency matrix
     g->numAreas = 0;
     for (int i = 0; i < MAX_AREAS; i++) {
         for (int j = 0; j < MAX_AREAS; j++)
@@ -13,21 +13,21 @@ void initGraph(Graph *g) {
 
 int findAreaIndex(Graph *g, char name[]) {
     for (int i = 0; i < g->numAreas; i++) {
-        if (strcmp(g->areaNames[i], name) == 0)
+        if (strcmp(g->areaNames[i], name) == 0) //0 means the names matched
             return i;
     }
     return -1;
 }
 
 void addArea(Graph *g, char name[]) {
-    if (g->numAreas >= MAX_AREAS) {
+    if (g->numAreas >= MAX_AREAS) { //max areas=50
         printf("Cannot add more areas.\n");
         return;
     }
-
-    size_t cap = sizeof g->areaNames[g->numAreas]; // capacity for one name
+    //size_t is a datatype that stores the value that sizeof returns
+    size_t cap = sizeof g->areaNames[g->numAreas]; //capacity for one name
     char tmp[sizeof g->areaNames[0]];
-    // Copy safely and ensure null-termination
+    //Copy safely and ensure null-termination
     strncpy(tmp, name, cap - 1);
     tmp[cap - 1] = '\0';
 
@@ -62,6 +62,7 @@ void deleteArea(Graph *g, char name[]) {
         return;
     }
 
+
     // Shift rows and columns
     for (int i = index; i < g->numAreas - 1; i++) {
         strcpy(g->areaNames[i], g->areaNames[i + 1]);
@@ -86,7 +87,7 @@ void addConnection(Graph *g, char src[], char dest[]) {
         printf("Both areas must exist before connecting.\n");
         return;
     }
-    g->adj[s][d] = g->adj[d][s] = 1;
+    g->adj[s][d] = g->adj[d][s] = 1; //undirected connection
     printf("Connection added between '%s' and '%s'.\n", src, dest);
 }
 

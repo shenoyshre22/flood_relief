@@ -31,7 +31,7 @@ int askContinue(const char *msg) {
         else if (choice[0] == 'n' || choice[0] == 'N')
             return 0;
         else
-            printf("❌ Invalid input. Please enter 'y' or 'n'.\n");
+            printf("Invalid input. Please enter 'y' or 'n'.\n");
     }
 }
 
@@ -39,9 +39,9 @@ int askContinue(const char *msg) {
 // Display total stock count only (summary view)
 void showStock(Queue *q) {
     if (isEmpty(q))
-        printf("📦 Inventory empty.\n");
+        printf("Inventory empty.\n");
     else
-        printf("📦 Current stock: %d packages.\n", q->rear - q->front + 1);
+        printf("Current stock: %d packages.\n", q->rear - q->front + 1);
 }
 
 int main() {
@@ -68,10 +68,10 @@ int main() {
         choice = getIntInput("Enter choice: ");
 
         switch (choice) {
-            // ✅ ADD STOCK
+            //ADD STOCK
             case 1:
                 if (isFull(&q)) {
-                    printf("⚠️ Inventory is already full! Cannot add more packages.\n");
+                    printf("Inventory is already full! Cannot add more packages.\n");
                     break;
                 }
 
@@ -80,7 +80,7 @@ int main() {
 
                     for (int i = 0; i < num; i++) {
                         if (isFull(&q)) {
-                            printf("⚠️ Inventory full! Added %d packages so far.\n", i);
+                            printf("Inventory full! Added %d packages so far.\n", i);
                             break;
                         }
                         enqueue(&q, 1);
@@ -89,16 +89,16 @@ int main() {
                     displayQueue(&q);
 
                     if (isFull(&q)) {
-                        printf("📦 Inventory now full — returning to main menu.\n");
+                        printf("Inventory now full — returning to main menu.\n");
                         break;
                     }
                 } while (askContinue("Add more packages?"));
                 break;
 
-            // ✅ REMOVE STOCK
+            //REMOVE STOCK
             case 2:
                 if (isEmpty(&q)) {
-                    printf("⚠️ No packages available for transport.\n");
+                    printf("No packages available for transport.\n");
                     break;
                 }
 
@@ -108,13 +108,13 @@ int main() {
                     displayQueue(&q);
 
                     if (isEmpty(&q)) {
-                        printf("📦 All packages transported. Inventory empty.\n");
+                        printf("All packages transported. Inventory empty.\n");
                         break;
                     }
                 } while (askContinue("Remove more packages?"));
                 break;
 
-            // ✅ ADD AREA
+            //ADD AREA
             case 3:
                 do {
                     printf("Enter area name: ");
@@ -123,7 +123,7 @@ int main() {
                 } while (askContinue("Add another area?"));
                 break;
 
-            // ✅ DELETE AREA
+            //DELETE AREA
             case 4:
                 do {
                     printf("Enter area name to delete: ");
@@ -132,7 +132,7 @@ int main() {
                 } while (askContinue("Delete another area?"));
                 break;
 
-            // ✅ ADD CONNECTION
+            //ADD CONNECTION
             case 5:
                 do {
                     printf("Enter source area: ");
@@ -143,12 +143,12 @@ int main() {
                 } while (askContinue("Add another connection?"));
                 break;
 
-            // ✅ DISPLAY GRAPH
+            //DISPLAY GRAPH
             case 6:
                 displayGraph(&g);
                 break;
 
-            // ✅ MARK DELIVERED
+            //MARK DELIVERED
             case 7:
                 do {
                     printf("Enter area name to mark delivered: ");
@@ -157,18 +157,18 @@ int main() {
                 } while (askContinue("Mark another area as delivered?"));
                 break;
 
-            // ✅ DISPLAY STOCK SUMMARY
+            //DISPLAY STOCK SUMMARY
             case 8:
                 displayQueue(&q);
                 break;
 
-            // ✅ EXIT
+            //EXIT
             case 0:
                 printf("Exiting system. Stay safe!\n");
                 return 0;
 
             default:
-                printf("❌ Invalid choice. Please enter a number from 0 to 8.\n");
+                printf("Invalid choice. Please enter a number from 0 to 8.\n");
         }
     }
 }
