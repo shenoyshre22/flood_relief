@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include "flood.h"
 
-// helper function to safely read line input
+// Read a line safely
 void readLine(char *str, int size) {
     fgets(str, size, stdin);
     str[strcspn(str, "\n")] = '\0'; // remove newline
 }
 
-// helper to get integer input safely
+// Get integer safely
 int getIntInput(const char *prompt) {
     char buf[20];
     int val;
@@ -19,12 +19,29 @@ int getIntInput(const char *prompt) {
     return val;
 }
 
-// ask user if they want to continue an operation
+// Ask user to continue (robust version)
 int askContinue(const char *msg) {
     char choice[5];
-    printf("%s (y/n): ", msg);
-    readLine(choice, sizeof(choice));
-    return (choice[0] == 'y' || choice[0] == 'Y');
+    while (1) {
+        printf("%s (y/n): ", msg);
+        readLine(choice, sizeof(choice));
+
+        if (choice[0] == 'y' || choice[0] == 'Y')
+            return 1;
+        else if (choice[0] == 'n' || choice[0] == 'N')
+            return 0;
+        else
+            printf("❌ Invalid input. Please enter 'y' or 'n'.\n");
+    }
+}
+
+// Display queue as total stock count only
+// Display total stock count only (summary view)
+void showStock(Queue *q) {
+    if (isEmpty(q))
+        printf("📦 Inventory empty.\n");
+    else
+        printf("📦 Current stock: %d packages.\n", q->rear - q->front + 1);
 }
 
 int main() {
@@ -51,28 +68,53 @@ int main() {
         choice = getIntInput("Enter choice: ");
 
         switch (choice) {
+            // ✅ ADD STOCK
             case 1:
+                if (isFull(&q)) {
+                    printf("⚠️ Inventory is already full! Cannot add more packages.\n");
+                    break;
+                }
+
                 do {
                     num = getIntInput("Enter number of packages to add: ");
+
                     for (int i = 0; i < num; i++) {
                         if (isFull(&q)) {
-                            printf("Inventory full! %d packages added so far.\n", i);
+                            printf("⚠️ Inventory full! Added %d packages so far.\n", i);
                             break;
                         }
                         enqueue(&q, 1);
                     }
+
                     displayQueue(&q);
+
+                    if (isFull(&q)) {
+                        printf("📦 Inventory now full — returning to main menu.\n");
+                        break;
+                    }
                 } while (askContinue("Add more packages?"));
                 break;
 
+            // ✅ REMOVE STOCK
             case 2:
+                if (isEmpty(&q)) {
+                    printf("⚠️ No packages available for transport.\n");
+                    break;
+                }
+
                 do {
                     num = getIntInput("Enter number of packages to transport: ");
                     dequeue(&q, num);
                     displayQueue(&q);
+
+                    if (isEmpty(&q)) {
+                        printf("📦 All packages transported. Inventory empty.\n");
+                        break;
+                    }
                 } while (askContinue("Remove more packages?"));
                 break;
 
+            // ✅ ADD AREA
             case 3:
                 do {
                     printf("Enter area name: ");
@@ -81,6 +123,7 @@ int main() {
                 } while (askContinue("Add another area?"));
                 break;
 
+            // ✅ DELETE AREA
             case 4:
                 do {
                     printf("Enter area name to delete: ");
@@ -89,6 +132,7 @@ int main() {
                 } while (askContinue("Delete another area?"));
                 break;
 
+            // ✅ ADD CONNECTION
             case 5:
                 do {
                     printf("Enter source area: ");
@@ -99,10 +143,12 @@ int main() {
                 } while (askContinue("Add another connection?"));
                 break;
 
+            // ✅ DISPLAY GRAPH
             case 6:
                 displayGraph(&g);
                 break;
 
+            // ✅ MARK DELIVERED
             case 7:
                 do {
                     printf("Enter area name to mark delivered: ");
@@ -111,16 +157,18 @@ int main() {
                 } while (askContinue("Mark another area as delivered?"));
                 break;
 
+            // ✅ DISPLAY STOCK SUMMARY
             case 8:
                 displayQueue(&q);
                 break;
 
+            // ✅ EXIT
             case 0:
                 printf("Exiting system. Stay safe!\n");
                 return 0;
 
             default:
-                printf("Invalid choice.\n");
+                printf("❌ Invalid choice. Please enter a number from 0 to 8.\n");
         }
     }
 }

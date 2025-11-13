@@ -47,11 +47,7 @@ void dequeue(Queue *q, int num) {
 void displayQueue(Queue *q) {
     if (isEmpty(q)) {
         printf("Inventory empty.\n");
-        return;
+    } else {
+        printf("Current stock: %d packages.\n", q->rear - q->front + 1);
     }
-    printf("Current inventory (%d packages): ", q->rear - q->front + 1);
-    for (int i = q->front; i <= q->rear; i++) {
-        printf("%d ", q->items[i]);
-    }
-    printf("\n");
 }
