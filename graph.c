@@ -19,7 +19,40 @@ int findAreaIndex(Graph *g, char name[]) {
     return -1;
 }
 
-void addArea(Graph *g, char name[]) {
+void addArea(Graph *g, const char name[]) {
+    if (g->numAreas >= MAX_AREAS) {
+        printf("Cannot add more areas.\n");
+        return;
+    }
+
+    //Temporary buffer
+    char tmp[sizeof g->areaNames[0]];
+    strncpy(tmp, name, sizeof(tmp) - 1);
+    tmp[sizeof(tmp) - 1] = '\0'; // ensure null termination
+
+    //Remove newline
+    size_t len = strlen(tmp);
+    while (len > 0 && (tmp[len - 1] == '\n' || tmp[len - 1] == '\r')) { //fgets keeps the \n character at the end
+        tmp[--len] = '\0'; //remove newline character
+    }
+
+    //Validate name
+    if (len == 0) {
+        printf("Name cannot be empty.\n");
+        return;
+    }
+    if (findAreaIndex(g, tmp) != -1) {
+        printf("Area already exists.\n");
+        return;
+    }
+
+    //Store in graph
+    strcpy(g->areaNames[g->numAreas], tmp);
+    g->numAreas++;
+    printf("Area '%s' added successfully.\n", tmp);
+}
+
+/*void addArea(Graph *g, char name[]) {
     if (g->numAreas >= MAX_AREAS) { //max areas=50
         printf("Cannot add more areas.\n");
         return;
@@ -53,7 +86,7 @@ void addArea(Graph *g, char name[]) {
 
     g->numAreas++;
     printf("Area '%s' added successfully.\n", tmp);
-}
+}*/
 
 void deleteArea(Graph *g, char name[]) {
     int index = findAreaIndex(g, name);
@@ -61,7 +94,6 @@ void deleteArea(Graph *g, char name[]) {
         printf("Area not found.\n");
         return;
     }
-
 
     // Shift rows and columns
     for (int i = index; i < g->numAreas - 1; i++) {
