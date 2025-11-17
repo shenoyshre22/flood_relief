@@ -18,6 +18,7 @@ void dequeue(Queue *q, int num); //deletion from queue
 void displayQueue(Queue *q); //print all
 
 //graph def
+
 typedef struct {
     int adj[MAX_AREAS][MAX_AREAS]; //adjacency matrix says whether 2 areas are connected or not (1=connected, 0=not connected)
     int numAreas; //no of areas that are in the graph rn
@@ -32,5 +33,7 @@ int findAreaIndex(Graph *g, char name[]); //find position of area
 void addConnection(Graph *g, char src[], char dest[]); //connects 2 nodes
 void displayGraph(Graph *g); //print all nodes
 void markDelivered(Graph *g, char name[]); //0=not delivered, 1=delivered
+void bfs(Graph *g, char start[]);
+void dispatchPackages(Graph *g, Queue *q, char area[], int count);
 
 #endif
