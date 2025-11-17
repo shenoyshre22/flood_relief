@@ -126,26 +126,34 @@ void markDelivered(Graph *g, char name[]) {
     printf("Area '%s' marked as delivered.\n", name);
 }
 
-// ---------------- BFS ----------------
+// ---------------- BFS (SEARCH) ----------------
 
-void bfs(Graph *g, char start[]) {
-    int s = findAreaIndex(g, start);
-    if (s == -1) {
-        printf("Starting area does not exist.\n");
+void bfs(Graph *g, char searchName[]) {
+    int target = findAreaIndex(g, searchName);
+    if (target == -1) {
+        printf("Area '%s' not found in graph.\n", searchName);
         return;
     }
 
     int visited[MAX_AREAS] = {0};
     int queue[MAX_AREAS], front = 0, rear = 0;
+    int found = 0;
 
-    queue[rear++] = s;
-    visited[s] = 1;
+    queue[rear++] = 0;  // Start from first area (index 0)
+    visited[0] = 1;
 
-    printf("BFS Order: ");
+    printf("\nSearching for area '%s' using BFS...\n", searchName);
 
     while (front < rear) {
         int u = queue[front++];
-        printf("%s ", g->areaNames[u]);
+        printf("Visiting: %s\n", g->areaNames[u]);
+
+        if (u == target) {
+            found = 1;
+            printf("\n Area '%s' FOUND! [Status: %s]\n", 
+                   searchName, g->delivered[u] ? "Delivered" : "Pending");
+            break;
+        }
 
         for (int v = 0; v < g->numAreas; v++) {
             if (!visited[v] && g->adj[u][v] == 1) {
@@ -154,7 +162,10 @@ void bfs(Graph *g, char start[]) {
             }
         }
     }
-    printf("\n");
+
+    if (!found) {
+        printf("\n✗ Area '%s' not found (unreachable from area 0).\n", searchName);
+    }
 }
 
 // ---------------- DISPATCH ----------------
