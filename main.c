@@ -3,44 +3,44 @@
 #include <stdlib.h>
 #include "flood.h"
 
-// Read a line safely
+// Read a full line safely
 void readLine(char *str, int size) {
     fgets(str, size, stdin);
-    str[strcspn(str, "\n")] = '\0'; // remove newline
+    str[strcspn(str, "\n")] = '\0';
 }
 
-// Get integer safely
+// Safe integer input using fgets()
 int getIntInput(const char *prompt) {
-    char buf[20];
+    char buf[50];
     int val;
-    printf("%s", prompt);
-    fgets(buf, sizeof(buf), stdin);
-    val = atoi(buf);
-    return val;
-}
 
-// Ask user to continue (robust version)
-int askContinue(const char *msg) {
-    char choice[5];
     while (1) {
-        printf("%s (y/n): ", msg);
-        readLine(choice, sizeof(choice));
+        printf("%s", prompt);
+        fgets(buf, sizeof(buf), stdin);
 
-        if (choice[0] == 'y' || choice[0] == 'Y')
-            return 1;
-        else if (choice[0] == 'n' || choice[0] == 'N')
-            return 0;
-        else
-            printf("Invalid input. Please enter 'y' or 'n'.\n");
+        if (sscanf(buf, "%d", &val) == 1)
+            return val;
+
+        printf("Invalid number. Try again.\n");
     }
 }
 
-// Display total stock only
-void showStock(Queue *q) {
-    if (isEmpty(q))
-        printf("Inventory empty.\n");
-    else
-        printf("Current stock: %d packages.\n", q->rear - q->front + 1);
+// Ask y/n safely (NO repeated "Invalid input")
+int askContinue(const char *msg) {
+    char line[10];
+
+    while (1) {
+        printf("%s (y/n): ", msg);
+        fgets(line, sizeof(line), stdin);
+        line[strcspn(line, "\n")] = '\0';
+
+        if (strlen(line) == 0) continue;
+
+        if (line[0] == 'y' || line[0] == 'Y') return 1;
+        if (line[0] == 'n' || line[0] == 'N') return 0;
+
+        printf("Invalid input.\n");
+    }
 }
 
 int main() {
@@ -62,45 +62,129 @@ int main() {
         printf("6. Display graph\n");
         printf("7. Mark area as delivered\n");
         printf("8. Display stock\n");
-        printf("9. BFS Traversal\n");               // ★ ADDED
-        printf("10. Dispatch Packages to Area\n");  // ★ ADDED
+        printf("9. BFS traversal\n");
+        printf("10. Dispatch packages to area\n");
         printf("0. Exit\n");
 
         choice = getIntInput("Enter choice: ");
 
         switch (choice) {
 
-            // --- existing cases unchanged ---
-
-            case 9: {
-                char start[50];
-                printf("Enter starting area name for BFS: ");
-                readLine(start, sizeof(start));
-                bfs(&g, start);
+        // ADD STOCK
+        case 1:
+            if (isFull(&q)) {
+                printf("Inventory full!\n");
                 break;
             }
+            do {
+                num = getIntInput("How many packages to add? ");
 
-            case 10: {
-                char area[50];
-                int count;
+                for (int i = 0; i < num; i++) {
+                    if (isFull(&q)) {
+                        printf("Inventory full! Added %d so far.\n", i);
+                        break;
+                    }
+                    enqueue(&q, 1);
+                }
 
-                printf("Enter area to dispatch packages to: ");
+                displayQueue(&q);
+
+                if (isFull(&q)) break;
+
+            } while (askContinue("Add more packages?"));
+            break;
+
+        // REMOVE STOCK
+        case 2:
+            if (isEmpty(&q)) {
+                printf("Inventory empty.\n");
+                break;
+            }
+            do {
+                num = getIntInput("How many packages to transport? ");
+                dequeue(&q, num);
+                displayQueue(&q);
+
+                if (isEmpty(&q)) {
+                    printf("All packages transported.\n");
+                    break;
+                }
+
+            } while (askContinue("Remove more packages?"));
+            break;
+
+        // ADD AREA
+        case 3:
+            do {
+                printf("Enter area name: ");
                 readLine(area, sizeof(area));
+                addArea(&g, area);
+            } while (askContinue("Add another area?"));
+            break;
 
-                printf("Enter number of packages to send: ");
-                scanf("%d", &count);
-                getchar(); // clear newline
+        // DELETE AREA
+        case 4:
+            do {
+                printf("Enter area name to delete: ");
+                readLine(area, sizeof(area));
+                deleteArea(&g, area);
+            } while (askContinue("Delete another area?"));
+            break;
 
-                dispatchPackages(&g, &q, area, count);   // ★ FIXED q
-                break;
-            }
+        // ADD CONNECTION
+        case 5:
+            do {
+                printf("Enter source area: ");
+                readLine(src, sizeof(src));
+                printf("Enter destination area: ");
+                readLine(dest, sizeof(dest));
 
-            case 0:
-                printf("Exiting system. Stay safe!\n");
-                return 0;
+                addConnection(&g, src, dest);
 
-            default:
-                printf("Invalid choice. Please enter a number from 0 to 10.\n"); // ★ FIXED
+            } while (askContinue("Add another connection?"));
+            break;
+
+        // DISPLAY GRAPH
+        case 6:
+            displayGraph(&g);
+            break;
+
+        // MARK DELIVERED
+        case 7:
+            do {
+                printf("Enter area name: ");
+                readLine(area, sizeof(area));
+                markDelivered(&g, area);
+            } while (askContinue("Mark another delivered?"));
+            break;
+
+        // DISPLAY STOCK
+        case 8:
+            displayQueue(&q);
+            break;
+
+        // BFS TRAVERSAL
+        case 9:
+            printf("Enter start area: ");
+            readLine(area, sizeof(area));
+            bfs(&g, area);
+            break;
+
+        // DISPATCH PACKAGES USING BFS
+        case 10:
+            printf("Enter area to dispatch: ");
+            readLine(area, sizeof(area));
+            num = getIntInput("Enter number of packages: ");
+            dispatchPackages(&g, &q, area, num);
+            break;
+
+        // EXIT
+        case 0:
+            printf("Exiting system. Stay safe!\n");
+            return 0;
+
+        default:
+            printf("Invalid choice.\n");
         }
     }
 }
