@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include "flood.h"
 
-// Read a full line safely
+//read full line
 void readLine(char *str, int size) {
     fgets(str, size, stdin);
     str[strcspn(str, "\n")] = '\0';
 }
 
-// Safe integer input using fgets()
+//int input
 int getIntInput(const char *prompt) {
     char buf[50];
     int val;
@@ -25,7 +25,7 @@ int getIntInput(const char *prompt) {
     }
 }
 
-// Ask y/n safely (NO repeated "Invalid input")
+//ask y or n
 int askContinue(const char *msg) {
     char line[10];
 
@@ -62,15 +62,15 @@ int main() {
         printf("6. Display graph\n");
         printf("7. Mark area as delivered\n");
         printf("8. Display stock\n");
-        printf("9. BFS traversal\n");
-        printf("10. Dispatch packages to area\n");
+        printf("9. Dispatch packages to area\n");
+        printf("10.BFS traversal to find shortest path\n");
         printf("0. Exit\n");
 
         choice = getIntInput("Enter choice: ");
 
         switch (choice) {
 
-        // ADD STOCK
+        //add stock to queue
         case 1:
             if (isFull(&q)) {
                 printf("Inventory full!\n");
@@ -94,7 +94,7 @@ int main() {
             } while (askContinue("Add more packages?"));
             break;
 
-        // REMOVE STOCK
+        //remove stock from queue
         case 2:
             if (isEmpty(&q)) {
                 printf("Inventory empty.\n");
@@ -113,7 +113,7 @@ int main() {
             } while (askContinue("Remove more packages?"));
             break;
 
-        // ADD AREA
+        //add area to graph
         case 3:
             do {
                 printf("Enter area name: ");
@@ -122,7 +122,7 @@ int main() {
             } while (askContinue("Add another area?"));
             break;
 
-        // DELETE AREA
+        //delete area from graph
         case 4:
             do {
                 printf("Enter area name to delete: ");
@@ -131,7 +131,7 @@ int main() {
             } while (askContinue("Delete another area?"));
             break;
 
-        // ADD CONNECTION
+        //connections
         case 5:
             do {
                 printf("Enter source area: ");
@@ -144,12 +144,12 @@ int main() {
             } while (askContinue("Add another connection?"));
             break;
 
-        // DISPLAY GRAPH
+        //display graph
         case 6:
             displayGraph(&g);
             break;
 
-        // MARK DELIVERED
+        //marking as delivered
         case 7:
             do {
                 printf("Enter area name: ");
@@ -158,27 +158,31 @@ int main() {
             } while (askContinue("Mark another delivered?"));
             break;
 
-        // DISPLAY STOCK
+        //display inventory stock
         case 8:
             displayQueue(&q);
             break;
 
-        // BFS TRAVERSAL
+        //area wise dispatch of packages
         case 9:
-            printf("Enter start area: ");
-            readLine(area, sizeof(area));
-            bfs(&g, area);
-            break;
-
-        // DISPATCH PACKAGES USING BFS
-        case 10:
             printf("Enter area to dispatch: ");
             readLine(area, sizeof(area));
             num = getIntInput("Enter number of packages: ");
             dispatchPackages(&g, &q, area, num);
             break;
 
-        // EXIT
+        //bfs
+        case 10:
+            do {
+                    printf("Enter source area: ");
+                    readLine(src, sizeof(src));
+                    printf("Enter destination area: ");
+                    readLine(dest, sizeof(dest));
+                    bfsShortestPath(&g, src, dest);
+                } while (askContinue("Find another shortest path?"));
+                break;
+
+        //exit
         case 0:
             printf("Exiting system. Stay safe!\n");
             return 0;

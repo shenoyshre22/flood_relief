@@ -33,7 +33,7 @@ int findAreaIndex(Graph *g, char name[]); //find position of area
 void addConnection(Graph *g, char src[], char dest[]); //connects 2 nodes
 void displayGraph(Graph *g); //print all nodes
 void markDelivered(Graph *g, char name[]); //0=not delivered, 1=delivered
-void bfs(Graph *g, char start[]);
 void dispatchPackages(Graph *g, Queue *q, char area[], int count);
+void bfsShortestPath(Graph *g, char src[], char dest[]);
 
 #endif

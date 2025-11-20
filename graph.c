@@ -2,7 +2,6 @@
 #include <string.h>
 #include "flood.h"
 
-// ---------------- BASIC GRAPH FUNCTIONS ----------------
 
 void initGraph(Graph *g) {
     g->numAreas = 0;
@@ -45,17 +44,16 @@ void deleteArea(Graph *g, char name[]) {
         return;
     }
 
-    // Shift rows
-    for (int i = idx; i < g->numAreas - 1; i++)
+    for (int i = idx; i < g->numAreas - 1; i++) //we are shifting rows from here
         for (int j = 0; j < g->numAreas; j++)
             g->adj[i][j] = g->adj[i + 1][j];
 
-    // Shift columns
+    //we are shifting columns from here
     for (int j = idx; j < g->numAreas - 1; j++)
         for (int i = 0; i < g->numAreas; i++)
             g->adj[i][j] = g->adj[i][j + 1];
 
-    // Shift names + delivered flags
+    //...
     for (int i = idx; i < g->numAreas - 1; i++) {
         strcpy(g->areaNames[i], g->areaNames[i + 1]);
         g->delivered[i] = g->delivered[i + 1];
@@ -94,8 +92,7 @@ void displayGraph(Graph *g) {
 
     printf("\nADJACENCY MATRIX:\n");
 
-    // Header (1-based index) aligned with area numbers
-    printf("      "); // 6 spaces before the header numbers
+    printf("      "); //space between nos
     for (int i = 0; i < g->numAreas; i++) {
         printf("%d ", i + 1);
     }
@@ -103,7 +100,7 @@ void displayGraph(Graph *g) {
 
     for (int i = 0; i < g->numAreas; i++) {
 
-        // Row label (1-based) aligned with area numbering
+        //row
         printf("%d  |  ", i + 1);
 
         for (int j = 0; j < g->numAreas; j++) {
@@ -112,9 +109,6 @@ void displayGraph(Graph *g) {
         printf("\n");
     }
 }
-
-
-// ---------------- DELIVERED FLAG ----------------
 
 void markDelivered(Graph *g, char name[]) {
     int idx = findAreaIndex(g, name);
@@ -125,50 +119,6 @@ void markDelivered(Graph *g, char name[]) {
     g->delivered[idx] = 1;
     printf("Area '%s' marked as delivered.\n", name);
 }
-
-// ---------------- BFS (SEARCH) ----------------
-
-void bfs(Graph *g, char searchName[]) {
-    int target = findAreaIndex(g, searchName);
-    if (target == -1) {
-        printf("Area '%s' not found in graph.\n", searchName);
-        return;
-    }
-
-    int visited[MAX_AREAS] = {0};
-    int queue[MAX_AREAS], front = 0, rear = 0;
-    int found = 0;
-
-    queue[rear++] = 0;  // Start from first area (index 0)
-    visited[0] = 1;
-
-    printf("\nSearching for area '%s' using BFS...\n", searchName);
-
-    while (front < rear) {
-        int u = queue[front++];
-        printf("Visiting: %s\n", g->areaNames[u]);
-
-        if (u == target) {
-            found = 1;
-            printf("\n Area '%s' FOUND! [Status: %s]\n", 
-                   searchName, g->delivered[u] ? "Delivered" : "Pending");
-            break;
-        }
-
-        for (int v = 0; v < g->numAreas; v++) {
-            if (!visited[v] && g->adj[u][v] == 1) {
-                queue[rear++] = v;
-                visited[v] = 1;
-            }
-        }
-    }
-
-    if (!found) {
-        printf("\n✗ Area '%s' not found (unreachable from area 0).\n", searchName);
-    }
-}
-
-// ---------------- DISPATCH ----------------
 
 void dispatchPackages(Graph *g, Queue *q, char area[], int count) {
     int idx = findAreaIndex(g, area);
@@ -188,3 +138,74 @@ void dispatchPackages(Graph *g, Queue *q, char area[], int count) {
     dequeue(q, count);
     markDelivered(g, area);
 }
+
+void bfsShortestPath(Graph *g, char src[], char dest[]) {
+    int srcIndex = findAreaIndex(g, src);
+    int destIndex = findAreaIndex(g, dest);
+    
+    if (srcIndex == -1 || destIndex == -1) {
+        printf("Source or destination area not found.\n");
+        return;
+    }
+    
+    if (srcIndex == destIndex) {
+        printf("Shortest path from %s to %s: %s (distance: 0)\n", src, dest, src);
+        return;
+    }
+
+    
+    int visited[MAX_AREAS] = {0};
+    int distance[MAX_AREAS] = {0};
+    int parent[MAX_AREAS] = {-1};
+    Queue q;
+    initQueue(&q);
+    visited[srcIndex] = 1;
+    enqueue(&q, srcIndex);
+    
+    int found = 0;
+    while (!isEmpty(&q) && !found) {
+        int current = q.items[q.front];
+        dequeue(&q, 1);
+        
+        printf(" Exploring from %s (index %d)\n", g->areaNames[current], current);
+        
+
+        for (int i = 0; i < g->numAreas; i++) {
+            if (g->adj[current][i] == 1 && !visited[i]) {
+                printf(" Found connection %s -> %s\n", g->areaNames[current], g->areaNames[i]);
+                visited[i] = 1;
+                distance[i] = distance[current] + 1;
+                parent[i] = current;
+                
+                if (i == destIndex) {
+                    found = 1;
+                    break;
+                }
+                
+                enqueue(&q, i);
+            }
+        }
+    }
+    
+    if (!found) {
+        printf("No path found from %s to %s.\n", src, dest);
+    } else {
+        int path[MAX_AREAS];
+        int pathLength = 0;
+        int current = destIndex;
+        
+        while (current != -1) {
+            path[pathLength++] = current;
+            current = parent[current];
+        }
+        
+        printf("Shortest path from %s to %s (distance: %d): ", src, dest, distance[destIndex]);
+        for (int i = pathLength - 1; i >= 0; i--) {
+            printf("%s", g->areaNames[path[i]]);
+            if (i > 0) printf(" -> ");
+        }
+        printf("\n");
+    }
+}
+
+//end of graph.c
