@@ -1,8 +1,8 @@
 
-🌀 **Flood Relief Camp and Resource Allocation System**
+**Flood Relief Camp and Resource Allocation System**
 
 
-📘 ***Overview***
+***Overview***
 
 This project is a C-based Flood Relief Management System designed to efficiently manage relief operations during natural disasters.
 It implements two core Data Structures:
@@ -13,7 +13,7 @@ Graph (Non-linear): used to represent areas and their connectivity for efficient
 
 The system enables adding areas, connecting them, registering camps, maintaining stock, and allocating resources.
 
-🧩 ***Functionalities***
+***Functionalities***
 
 1)Add Areas and Connectivity
 
@@ -37,13 +37,19 @@ The system enables adding areas, connecting them, registering camps, maintaining
 
 11)Graph nodes are updated from Pending to Delivered.
 
-⚙️ ***Data Structures Used***
+Added functionalities:
+
+12)BFS traversal is used to find shortest path from source area to destination area.
+
+13)Area wise dispatch of packages is also possible.
+
+***Data Structures Used***
 
 Data Structure	Type	Purpose
 Queue	Linear	Handles relief package requests in FIFO order
 Graph (Adjacency Matrix)	Non-linear	Represents areas and their connections for delivery planning
 
-🧠 ***File Structure***
+***File Structure***
 
 flood_relief/
 
@@ -57,7 +63,7 @@ flood_relief/
 
 └── README.md     → project documentation
 
-🧩 ***How It Works***
+***How It Works***
 
 ->Initialize the System
 
@@ -81,7 +87,11 @@ flood_relief/
 
 ->Once resources reach an area, mark it as Delivered in the graph.
 
-🧪 ***Menu (CLI Interface)***
+->Area wise dispatch of packages can also executed.
+
+->BFS can be implemented to find shortest path between two areas.
+
+***Menu (CLI Interface)***
 
 ==== FLOOD RELIEF MANAGEMENT ====
 
@@ -93,29 +103,25 @@ flood_relief/
 6. Display graph
 7. Mark area as delivered
 8. Display stock
+9. Dispatch packages to area //this was an additional functionality
+10. BFS traversal to find shortest path //this was an additional functionality
 0. Exit
 
-⚙️ ***How to Compile and Run***
+
+***How to Compile and Run***
 
 *On Linux / Mac:*
-
 
 gcc main.c graph.c queue.c -o flood_relief
 ./flood_relief
 
 
-
-
 *On Windows (CMD or PowerShell):*
-
-
 
 gcc main.c graph.c queue.c -o flood_relief.exe
 flood_relief
 
-
-
-💡 ***Example Workflow***
+***Example Workflow***
 
 Add areas: AreaA, AreaB, AreaC
 
@@ -127,7 +133,9 @@ Deliver 3 packages and mark AreaA as delivered
 
 Display graph → shows AreaA marked as Delivered
 
-👩‍💻 ***Team Members***
+Area wise dispatch and BFS traversal to find the shortest path can also be done
+
+***Team Members***
 
 Shreya Patil – PES2UG24CS484
 
@@ -135,13 +143,12 @@ Shreya Shenoy – PES2UG24CS487
 
 Shrungashree K R – PES2UG24CS497
 
-📚 ***Key Learning Outcomes***
+***Key Learning Outcomes***
 
 Implemented Queue and Graph in a real-world simulation scenario.
 
 Practiced modular programming using multiple C source files.
 
 Understood FIFO processing and Graph traversal concepts.
-
 
 Strengthened skills in data structure design and clean code organization.
